@@ -6,7 +6,7 @@ import random
 import string
 from concurrent.futures import ThreadPoolExecutor
 
-# اضافه کردن پیام خوشامدگویی و لوگو
+#  non
 def welcome_message():
     logo = '''
       ██████╗ ██╗      ██████╗ ███████╗███████╗
@@ -19,7 +19,7 @@ def welcome_message():
     print(f"\033[1;31m{logo}\033[0m")
     print("\033[1;32mWelcome to Black Ghost's Instagram Brute Forcer!\033[0m")
 
-# اضافه کردن استیکرهای مرتبط
+# non
 def display_sticker(message):
     stickers = {
         "username": "🧑‍💻",
