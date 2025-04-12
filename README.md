@@ -30,3 +30,23 @@ pip install -r requirements.txt
 python brute_insta.py
 ---------------------------------------
 
+
+Input: When running the tool, you will be asked to enter the following information:
+______________________________________
+1-Instagram Username: The username of the target whose password you are trying to find.
+______________________________________
+2-Proxy: If you want to use a proxy, you can enter your proxy address (optional).
+______________________________________
+3-Delay between attempts: The amount of delay (in seconds) between each login search.
+______________________________________
+4-Multithreading: You will be asked whether you can use it to make it faster or not.
+______________________________________
+5-Use Random User-Agent: Do you want to use a User-Agent?
+______________________________________
+6-Saved Results: Can you save the results to a file?
+______________________________________
+7-Proxy Rotation: Do you want to use different proxies?
+______________________________________
+Start Attack: After entering the information, the tool will automatically start searching for Instagram account logins and give the results. 
+______________________________________
+Show results: If the correct password is found, you will be shown a success message. Otherwise, failed attempts will be displayed in the console.
