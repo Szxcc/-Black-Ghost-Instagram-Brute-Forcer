@@ -14,11 +14,10 @@ Proxy Rotation: Support proxy rotation to use multiple proxies for the attack.
 ______________________________________
 Use CSRF Token: To avoid detection and blocking, this tool uses CSRF Token.
 ______________________________________
-Graphic Stickers: Add graphic stickers to increase the attractiveness and ease of use.
-
-______________________________________
+_____________________________________
 
 1- How to install and set up:
+
 
 git clone https://github.com/Szxcc/-Black-Ghost-Instagram-Brute-Forcer.git
 ---------------------------------------
