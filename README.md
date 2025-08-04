@@ -1,5 +1,5 @@
 Features
-
+*
 Brute Force Attack on Instagram Accounts: This tool searches through a list of passwords to find the correct password for the target username.
 ______________________________________
 Proxy Support: Use a proxy to hide your IP address.
